@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection System</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Links -->
+        <div class="auth-links">
+            {% if 'username' in session %}
+                <p>Welcome, {{ session['username'] }}!</p>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
+            {% endif %}
+        </div>
+
+        <h1 class="text-center">Phishing Detection System</h1>
+
+        <form method="POST" action="/check_url">
+            <div class="form-group">
+                <label for="url">Enter URL:</label>
+                <input type="text" class="form-control" id="url" name="url" required>
+            </div>
+            <div class="form-group">
+                <label for="algorithm">Select Algorithm:</label>
+                <select class="form-control" id="algorithm" name="algorithm">
+                    {% for algo in algorithms %}
+                    <option value="{{ algo }}" {% if algo == selected_algorithm %}selected{% endif %}>
+                        {{ algo }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Check URL</button>
+        </form>
+
+        {% if result %}
+        <div class="mt-4 alert alert-info">
+            <h4>Result for URL: <a href="{{ url }}" target="_blank">{{ url }}</a></h4>
+            <p><strong>Status:</strong> {{ result }}</p>
+        </div>
+        {% endif %}
+
+        <a href="/download_phishing_urls" class="btn btn-success">Download Phishing URLs</a>
+    </div>
+</body>
+</html>
